@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>For Vishal 💘</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .screen { display: none; padding: 20px; }
+    .active { display: block; }
+
+    h1 { color: #b30047; font-size: 38px; }
+    p { font-size: 20px; color: #333; }
+
+    button {
+      padding: 12px 30px;
+      font-size: 17px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      margin: 12px;
+    }
+
+    #yes { background: #ff3366; color: white; }
+    #next { background: #ff3366; color: white; }
+    #no {
+      background: #444;
+      color: white;
+      position: absolute;
+    }
+
+    .heart {
+      font-size: 60px;
+      animation: beat 1s infinite;
+      margin: 15px;
+    }
+
+    @keyframes beat {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    .typing {
+      border-right: 3px solid #b30047;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 30px; }
+      p { font-size: 18px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<audio id="music" autoplay loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="confetti"></canvas>
+
+<!-- SCREEN 1 -->
+<div class="screen active" id="screen1">
+  <h1 class="typing" id="typeText"></h1>
+  <div class="heart">💖</div>
+  <p>Someone made this just for you…</p>
+  <button id="next" onclick="goToScreen2()">Continue 👉</button>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen" id="screen2">
+  <h1>Important Question 😌</h1>
+  <p>Will you be my Valentine, Vishal? 💌</p>
+  <button id="yes" onclick="yesClicked()">YES 😍</button>
+  <button id="no" onmouseover="moveNo()">NO 🙄</button>
+</div>
+
+<!-- SCREEN 3 -->
+<div class="screen" id="screen3">
+  <h1>YAYYYYY 🥹💘</h1>
+  <div class="heart">❤️❤️❤️</div>
+  <p>I knew it 😏</p>
+  <p>Tap below… there’s more 👀</p>
+  <button id="yes" onclick="openLetter()">Open Love Letter 💌</button>
+</div>
+
+<script>
+  // Typing animation
+  const text = "Hey Vishal ❤️";
+  let i = 0;
+  function typeEffect() {
+    if (i < text.length) {
+      document.getElementById("typeText").innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typeEffect, 120);
+    }
+  }
+  typeEffect();
+
+  function goToScreen2() {
+    document.getElementById("screen1").classList.remove("active");
+    document.getElementById("screen2").classList.add("active");
+  }
+
+  function yesClicked() {
+    document.getElementById("screen2").classList.remove("active");
+    document.getElementById("screen3").classList.add("active");
+    startConfetti();
+  }
+
+  const messages = [
+    "Nice try 😏",
+    "Not allowed 🚫",
+    "Think again 🤭",
+    "Wrong answer 😂",
+    "Only YES works 💕"
+  ];
+
+  function moveNo() {
+    const no = document.getElementById("no");
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    no.innerText = msg;
+    no.style.left = Math.random() * (window.innerWidth - 120) + "px";
+    no.style.top = Math.random() * (window.innerHeight - 60) + "px";
+  }
+
+  function openLetter() {
+    window.location.href = "letter.html";
+  }
+
+  // Confetti
+  function startConfetti() {
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let pieces = [];
+    for (let i = 0; i < 150; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 10
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(255,0,100,0.8)";
+      pieces.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      update();
+    }
+
+    function update() {
+      pieces.forEach(p => {
+        p.y += Math.cos(p.d) + 2;
+        if (p.y > canvas.height) {
+          p.y = 0;
+          p.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
+    setInterval(draw, 30);
+  }
+</script>
+
+</body>
+</html>
